@@ -223,7 +223,7 @@ docker run --rm hello-world # Expected: "Hello from Docker!"
 ### 4.1 Create the project directory structure
 
 ```bash
-mkdir -p /home/pranjal/ai-projects/job-pilot/{docker,scripts,credentials,resumes,resume_versions,tracker,templates,data,monitoring/grafana/{provisioning/datasources,provisioning/dashboards,dashboards}}
+mkdir -p /home/pranjal/ai-projects/job-pilot/{scripts,credentials,resumes,resume_versions,tracker,templates,data,monitoring/grafana/{provisioning/datasources,provisioning/dashboards,dashboards},agents/adaptive_resume,orchestrator,llm/prompts,scrapers,integrations,mcp_servers,tests}
 ```
 
 ### 4.2 Create docker-compose.yml
@@ -231,11 +231,11 @@ mkdir -p /home/pranjal/ai-projects/job-pilot/{docker,scripts,credentials,resumes
 Create the file at `/home/pranjal/ai-projects/job-pilot/docker-compose.yml`:
 
 ```yaml
-version: "3.8"
+# Note: 'version:' top-level key is obsolete in Compose Spec (Docker Compose v2+) — omitted intentionally.
 
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg17   # PostgreSQL 17 (stable, Sep 2024) with pgvector pre-installed
     container_name: jobpilot-postgres
     environment:
       POSTGRES_USER: jobpilot
@@ -954,7 +954,7 @@ Append to the existing `docker-compose.yml`:
 
 ```yaml
   prometheus:
-    image: prom/prometheus:v2.52.0
+    image: prom/prometheus:v3.10.0  # Latest stable (Feb 2026)
     container_name: jobpilot-prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -975,7 +975,7 @@ Append to the existing `docker-compose.yml`:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:11.0.0
+    image: grafana/grafana:12.4.2   # Latest stable (Mar 2026); grafana/grafana-oss deprecated since 12.4.0
     container_name: jobpilot-grafana
     volumes:
       - grafana_data:/var/lib/grafana
